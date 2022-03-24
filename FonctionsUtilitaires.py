@@ -22,4 +22,4 @@ def KITTI2OpenCV(img):
 def get3Dcoord(coordIm, Z, f):
     x = coordIm[0] * Z / f
     y = coordIm[1] * Z / f
-    return [x, y, Z]
+    return (x, y, Z)
