@@ -1,31 +1,26 @@
 import cv2 as cv
+import numpy as np
+
 import DescriptorMatch
 import pykitti as pk
 import FonctionsUtilitaires as util
 import matplotlib.pyplot as plt
+import FonctionsDeplacement as disp
 
 basedir = 'DataKITTI/dataset'
 sequence = '00'
 data = pk.odometry(basedir, sequence)
 
-
-#distance entre caméras: 0.54m
+fx = data.calib.K_cam0[0, 0]
+fy = data.calib.K_cam0[1, 1]
+b = 0.54*1000
 sensorWidth = 6.4*25.4
 sensorHeight = 4.8*25.4
-plt.imshow(data.get_cam0(1))
-plt.show()
-plt.imshow(data.get_cam0(2))
-plt.show()
-#img1 = cv.imread('box.png', cv.IMREAD_GRAYSCALE)  # queryImage
-#img2 = cv.imread('box_in_scene.png', cv.IMREAD_GRAYSCALE)  # trainImage
-img1 = cv.imread('left.png', cv.IMREAD_GRAYSCALE)           # queryImage
-img2 = cv.imread('right.png', cv.IMREAD_GRAYSCALE)          # trainImage
-print(img1.shape)
-matches, kp1, kp2 = DescriptorMatch.DescriptorMatch(img1, img2)
-matches_bin = DescriptorMatch.MatchesBinning(matches, kp1, 16, img1.shape, 1000)
+orb = cv.ORB_create()
+disp.transformationStep(0, 1, fx, b, data, orb)
 
-test = kp1[0]
-img3 = cv.drawMatches(img1, kp1, img2, kp2, matches_bin, None, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+print('end')
+#img3 = cv.drawMatches(img1, kp1, img2, kp2, matches, None, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
 #plt.imshow(img3), plt.show()
 
 
