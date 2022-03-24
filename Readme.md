@@ -12,3 +12,5 @@
     III: Vérification de la trajectoire calculée
 
 ![img.png](img.png)
+
+fast stereo visual odometry based on lk optical flow and ORB-SLAM 2
