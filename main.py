@@ -21,28 +21,35 @@ sensorHeight = 4.8 * 25.4
 orb = cv.ORB_create()
 pose = [np.array([0, 0, 0])]
 poseRef = [np.array([0, 0, 0])]
-
+transfo_cumulee = [np.identity(4)]
+list_transfo_ref = [data.poses[0]]
 for i in range(1, len(data.poses)):
 #for i in range(1, 200):
     transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb)
-    poseStep =  np.matmul(transfo, np.array([0,0,0,1]))
-    poseStep = poseStep[0:3]
-    poseStep = np.add(pose[i-1],poseStep)
+    transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
+    poseStep = transfo_cumulee[i][0:3, 3]
+    #poseStep = np.matmul(transfo, np.array([0, 0, 0, 1]))
+    #poseStep = transfo[0:3, 3]
+    #poseStep = np.add(pose[i-1], poseStep)
     #poseStep = np.add(transfo[0:3, 3], pose[i-1])
     #print(np.linalg.inv(transfo))
     #print(data.poses[i])
+    list_transfo_ref.append(data.poses[i])
     poseRefStep = data.poses[i][0:3, 3]
     print("calculee", poseStep)
     print('ref', poseRefStep)
     print('diff', np.add(poseRefStep, -1*poseStep))
     print('stepSizeRef', np.add(poseRefStep, -1*poseRef[i-1]))
     print('stepSizecalc', np.add(poseStep, -1*pose[i-1]))
+    if i == 3:
+        print(1)
     #print(data.poses[i])
     #print(transfo)
 
+
+    print(" step {}/{}".format(i, len(data.poses)-1))
     pose.append(poseStep)
     poseRef.append(poseRefStep)
-    print(" step {}/{}".format(i, len(data.poses)-1))
     #break
 
 
@@ -65,12 +72,22 @@ for i in poseRef:
 
 
 fig = plt.figure()
-ax = fig.add_subplot(211)
-plt.plot(x,y)
-ax = fig.add_subplot(212)
-plt.plot(np.dot(-1, zref), x)
+ax = fig.add_subplot(422)
+plt.plot(x, y)
+ax = fig.add_subplot(423)
+plt.plot(x, z)
+ax = fig.add_subplot(424)
+plt.plot(y, x)
+ax = fig.add_subplot(425)
+plt.plot(y, z)
+ax = fig.add_subplot(426)
+plt.plot(z, x)
+ax = fig.add_subplot(427)
+plt.plot(z, y)
+ax = fig.add_subplot(421)
+plt.plot(np.dot(-1, zref), xref)
+plt.tight_layout()
 plt.show()
-
 print('end')
 
 # img3 = cv.drawMatches(img1, kp1, img2, kp2, matches, None, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)

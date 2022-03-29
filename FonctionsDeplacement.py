@@ -52,7 +52,7 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb):
     points1 = np.float32(points1[:, np.newaxis, :])
     points2 = np.float32(points2[:, np.newaxis, :])
 
-    retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=(len(points1)*0.5))
+    retval, transfo, inliers = cv.estimateAffine3D(points1, points1, ransacThreshold=3)
     ligne = np.array([0, 0, 0, 1], ndmin=2)
     transfo = np.append(transfo, ligne, axis=0)
     return transfo
