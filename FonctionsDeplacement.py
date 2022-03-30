@@ -1,10 +1,11 @@
 import FonctionsUtilitaires as util
 import numpy as np
 import cv2 as cv
-import pcl
+import matplotlib.pyplot as plt
+import Rigid3Dtransform as rigid
 
 # TODO: clean-up, c'est assez spaghetti
-def transformationStep(step, stepPrecedent, f, b, data, orb):
+def transformationStep(step, stepPrecedent, f, b, data, orb, draw):
     bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=True)
 
     img1G = util.KITTI2OpenCV(data.get_cam0(stepPrecedent))  # queryImage step k-1
@@ -49,8 +50,24 @@ def transformationStep(step, stepPrecedent, f, b, data, orb):
 
     points1 = np.asarray(points1)
     points2 = np.asarray(points2)
+
+    points3 = np.transpose(points1)
+    points4 = np.transpose(points2)
     points1 = np.float32(points1[:, np.newaxis, :])
     points2 = np.float32(points2[:, np.newaxis, :])
 
-    retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=3)
+
+
+    #retval, transfo, inliers = cv.estimateAffine3D(points2, points1, ransacThreshold=3, confidence = 0.98)
+    transfo = rigid.rigid_transform_3D(points3, points4)
+    if draw:
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        for i in coords1:
+            ax.scatter(coords1[i][0], coords1[i][1], coords1[i][2], color = 'red')
+        for i in coords2:
+            ax.scatter(coords2[i][0], coords2[i][1], coords2[i][2], color = 'blue')
+        plt.show()
+
+    #transfo = np.vstack([transfo, np.transpose( np.array([0,0,0,1])[:, None])])
     return transfo
