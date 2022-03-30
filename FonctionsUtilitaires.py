@@ -19,7 +19,7 @@ def KITTI2OpenCV(img):
     return cv.cvtColor(np.array(img), cv.COLOR_RGB2BGR)
 
 
-def get3Dcoord(coordIm, Z, f):
-    x = coordIm[0] * Z / f
-    y = coordIm[1] * Z / f
+def get3Dcoord(coordIm, Z, fx, fy):
+    x = coordIm[0] * Z / fx
+    y = coordIm[1] * Z / fy
     return (x, y, Z)
