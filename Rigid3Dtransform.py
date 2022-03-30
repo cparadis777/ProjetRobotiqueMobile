@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # Input: expects 3xN matrix of points
 # Returns R,t
 # R = 3x3 rotation matrix
@@ -31,7 +32,7 @@ def rigid_transform_3D(A, B):
     H = Am @ np.transpose(Bm)
 
     # sanity check
-    #if linalg.matrix_rank(H) < 3:
+    # if linalg.matrix_rank(H) < 3:
     #    raise ValueError("rank of H = {}, expecting 3".format(linalg.matrix_rank(H)))
 
     # find rotation
@@ -41,11 +42,11 @@ def rigid_transform_3D(A, B):
     # special reflection case
     if np.linalg.det(R) < 0:
         print("det(R) < R, reflection detected!, correcting for it ...")
-        Vt[2,:] *= -1
+        Vt[2, :] *= -1
         R = Vt.T @ U.T
 
     t = -R @ centroid_A + centroid_B
+    temp = np.hstack([R, t])
+    transfo = np.vstack([temp, np.array([0, 0, 0, 1])])
 
-    temp = np.hstack([R,t])
-    transfo = np.vstack([temp, np.array([0,0,0,1])])
     return transfo
