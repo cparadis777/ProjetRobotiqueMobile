@@ -2,3 +2,5 @@
 DataKITTI/data_odometry_gray.zip
 *.pyc
 pykitti/__pycache__/*.pyc
+*.cpython-38.pyc
+pykitti/__pycache__/utils.cpython-38.pyc
