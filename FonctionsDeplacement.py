@@ -5,6 +5,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import distance
+from mpl_toolkits.mplot3d import Axes3D
 
 import FonctionsUtilitaires as util
 import Rigid3Dtransform as rigid
