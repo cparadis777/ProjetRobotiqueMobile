@@ -3,9 +3,9 @@
 import cv2 as cv
 import math
 import numpy as np
+#from scipy.spatial import distance
 
-
-# Converti Fx, Fy, X0 ou Y0 en fx, fy, x0 ou y0
+# Convert Fx, Fy, X0 ou Y0 en fx, fy, x0 ou y0
 def convertReal2Pixel(paramReel, dimReelle, dimImg):
     return paramReel * (dimReelle / dimImg)
 
