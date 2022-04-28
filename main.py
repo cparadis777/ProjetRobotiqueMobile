@@ -28,12 +28,12 @@ list_transfo_ref = [data.poses[0]]
 
 for i in range(1, len(data.poses)):
 #for i in range(1, 200):
-    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'rigid', True)
-    transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
-    poseStep = transfo_cumulee[i][0:3, 3]
+    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'affine', False)
+    #transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
+    #poseStep = transfo_cumulee[i][0:3, 3]
 
-    #poseStep = transfo[0:3, 3]
-    #poseStep = np.add(pose[i-1], poseStep)
+    poseStep = transfo[0:3, 3]
+    poseStep = np.add(pose[i-1], poseStep)
     list_transfo_ref.append(data.poses[i])
 
     poseRefStep = data.poses[i][0:3, 3]

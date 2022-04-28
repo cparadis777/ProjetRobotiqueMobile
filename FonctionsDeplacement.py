@@ -89,13 +89,11 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
     points2 = np.float32(points2[:, np.newaxis, :])
 
     if type == 'affine':
-        retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=3, confidence=0.98)
+        retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=1, confidence=0.99)
         transfo = np.vstack([transfo, np.transpose(np.array([0, 0, 0, 1])[:, None])])
 
     elif type == 'rigid':
         transfo = rigid.rigid_transform_3D(points3, points4)
-
-
     else:
         raise Exception('Type de transformation invalide')
 
@@ -110,8 +108,9 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
                 pass
             else:
                 coord_homo = np.array([coords1[i][0], coords1[i][1], coords1[i][2], 1])
-                point_transfo = np.matmul(np.linalg.inv( transfo), coord_homo)
-                #ax.scatter(coords1[i][0], coords1[i][1], coords1[i][2], color='red')
+                #point_transfo = np.matmul(transfo, coord_homo)
+                point_transfo = np.matmul(np.linalg.inv(transfo), coord_homo)
+                ax.scatter(coords1[i][0], coords1[i][1], coords1[i][2], color='red')
                 ax.scatter(point_transfo[0], point_transfo[1], point_transfo[2], color='green')
             k = k + 1
         k = 0
