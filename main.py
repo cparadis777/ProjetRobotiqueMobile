@@ -26,29 +26,33 @@ poseRef = [np.array([0, 0, 0])]
 transfo_cumulee = [np.identity(4)]
 list_transfo_ref = [data.poses[0]]
 
+
+
 for i in range(1, len(data.poses)):
 #for i in range(1, 200):
-    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'rigid', True)
-    transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
-    poseStep = transfo_cumulee[i][0:3, 3]
+    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'affine', False)
+    #transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
+    #poseStep = transfo_cumulee[i][0:3, 3]
 
-    #poseStep = transfo[0:3, 3]
-    #poseStep = np.add(pose[i-1], poseStep)
+    poseStep = transfo[0:3, 3]
+    poseStep = np.add(pose[i-1], poseStep)
     list_transfo_ref.append(data.poses[i])
+    #print(transfo)
+    #print(transfo[0:3, 3])
 
     poseRefStep = data.poses[i][0:3, 3]
-    # print("calculee", poseStep)
-    # print('ref', poseRefStep)
-    # print('diff', np.add(poseRefStep, -1*poseStep))
-    # print('stepSizeRef', np.add(poseRefStep, -1*poseRef[i-1]))
-    # print('stepSizecalc', np.add(poseStep, -1*pose[i-1]))
+    print("calculee", poseStep)
+    print('ref', poseRefStep)
+    print('diff', np.add(poseRefStep, -1*poseStep))
+    print('stepSizeRef', np.add(poseRefStep, -1*poseRef[i-1]))
+    print('stepSizecalc', np.add(poseStep, -1*pose[i-1]))
 
     #print(data.poses[i])
     #print(transfo)
 
-    print(" step {}/{}".format(i, len(data.poses)-1))
     pose.append(poseStep)
     poseRef.append(poseRefStep)
+    print(" step {}/{}".format(i, len(data.poses)-1))
     #break
 
 
@@ -75,22 +79,22 @@ fig = plt.figure()
 ax = fig.add_subplot(421)
 plt.plot(np.dot(1, zref), np.dot(-1, xref))
 
-ax = fig.add_subplot(422)
+ax = fig.add_subplot(423)
 plt.plot(x, y)
 
-ax = fig.add_subplot(423)
+ax = fig.add_subplot(424)
 plt.plot(x, z)
 
-ax = fig.add_subplot(424)
+ax = fig.add_subplot(425)
 plt.plot(y, x)
 
-ax = fig.add_subplot(425)
+ax = fig.add_subplot(426)
 plt.plot(y, z)
 
-ax = fig.add_subplot(426)
+ax = fig.add_subplot(427)
 plt.plot(z, x)
 
-ax = fig.add_subplot(427)
+ax = fig.add_subplot(428)
 plt.plot(z, y)
 
 plt.tight_layout()
