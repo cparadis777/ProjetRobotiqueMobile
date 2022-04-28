@@ -13,10 +13,13 @@ import Rigid3Dtransform as rigid
 def generatePointClouds(step, stepPrecedent, fx, fy, b, data, orb):
     bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=True)
 
-    img1G = util.KITTI2OpenCV(data.get_cam0(stepPrecedent))  # queryImage step k-1
-    img1D = util.KITTI2OpenCV(data.get_cam1(stepPrecedent))  # trainImage step k-1
+  #  img1G = util.KITTI2OpenCV(data.get_cam0(stepPrecedent))  # queryImage step k-1
+  #  img1D = util.KITTI2OpenCV(data.get_cam1(stepPrecedent))  # trainImage step k-1
     img2G = util.KITTI2OpenCV(data.get_cam0(step))  # queryImage step k
     img2D = util.KITTI2OpenCV(data.get_cam1(step))  # trainImage step k
+
+    img1G = util.KITTI2OpenCV(data.get_cam0(stepPrecedent))  # queryImage step k-1
+    img1D = util.KITTI2OpenCV(data.get_cam1(stepPrecedent))  # trainImage step k-1
 
     kp1G, desc1G = orb.detectAndCompute(img1G, None)
     kp1D, desc1D = orb.detectAndCompute(img1D, None)
