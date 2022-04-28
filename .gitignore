@@ -1,3 +1,4 @@
 /DataKITTI/dataset/
 DataKITTI/data_odometry_gray.zip
 *.pyc
+*.cpython-38.pyc
