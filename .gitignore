@@ -1,4 +1,8 @@
 /DataKITTI/dataset/
 DataKITTI/data_odometry_gray.zip
 *.pyc
+<<<<<<< HEAD
 *.cpython-38.pyc
+=======
+*.cpython-38.pyc
+>>>>>>> main
