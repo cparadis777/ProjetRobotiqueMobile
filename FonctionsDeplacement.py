@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import distance
 from mpl_toolkits.mplot3d import Axes3D
-
+import icp
 import FonctionsUtilitaires as util
 import Rigid3Dtransform as rigid
 
@@ -64,7 +64,7 @@ def generatePointClouds(step, stepPrecedent, fx, fy, b, data, orb):
     mask = []
     for i in range(len(points1)):
         distance = util.euclidian_distance(points1[i], points2[i])
-        if distance <= 1000:
+        if distance <= 50:
             mask.append(True)
         else:
             mask.append(False)
@@ -85,39 +85,46 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
     #print(util.euclidian_distance(points1[0], points2[0]))
 
     #Test de vérification de la transformation
+    angle = 0.1
+    dx = 1
+    dy = 0
+    dz = 0
+    transfo_test = np.array([[1, 0, 0, dx], [0, math.cos(angle), math.sin(angle), dy], [0, -1*math.sin(angle), math.cos(angle), dz], [0, 0, 0, 1]])
+    #transfo_test = np.array([[1, 0, 0, 0.01], [0, 0.998, 0.01, 0], [0, -0.01, 0.998, 0], [0, 0, 0, 1]])
 
-    #transfo_test = np.array([[1, 0, 0, 0.1], [0, 0.98, 0.17, 0], [0, -0.17, 0.98, 0], [0, 0, 0, 1]])
-    transfo_test = np.array([[1, 0, 0, 0.01], [0, 0.998, 0.01, 0], [0, -0.01, 0.998, 0], [0, 0, 0, 1]])
+    test = True
 
-    #print(transfo_test)
-    points_test = []
-    for i in points1.tolist():
-        point = np.array([i[0], i[1], i[2], 1])
-        points_test.append(np.matmul(transfo_test, point))
-    points2 = points_test
-    #print('fin test')
+    if test:
+        #print(transfo_test)
+        points_test = []
+        for i in points1.tolist():
+            point = np.array([i[0], i[1], i[2], 1])
+            points_test.append(np.matmul(transfo_test, point))
+        points2 = np.asarray(points_test)
+        #print('fin test')
 
-    points2 = np.asarray(points_test)
     points2 = points2[:, 0:3]
-    points3 = np.transpose(points1)
-    points4 = np.transpose(points2)
-    points1 = points1[0:100, :]
-    points2 = points2[0:100, :]
+    points3 = points1
+    points4 = points2
+    #points1 = points1[0:100, :]
+    #points2 = points2[0:100, :]
     points1 = np.float32(points1[:, np.newaxis, :])
     points2 = np.float32(points2[:, np.newaxis, :])
 
     if type == 'affine':
         thresh = int(math.ceil(len(points1)*0.5))
-        retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=thresh, confidence=0.99)
+        retval, transfo, inliers = cv.estimateAffine3D(points1, points2, ransacThreshold=thresh, confidence=0.80)
         # R = transfo[0:3, 0:3]
         # T = transfo[0:3, 3]
         # transfo = np.hstack([-1*R, T[:, None]])
         transfo = np.vstack([transfo, np.transpose(np.array([0, 0, 0, 1])[:, None])])
 
     elif type == 'rigid':
+        transfo = rigid.rigid_transform_3D(np.transpose(points3)[:, 0:3], np.transpose(points4)[:, 0:3])
 
-        transfo = rigid.rigid_transform_3D(points3[:, 0:3], points4[:, 0:3])
-
+    elif type == 'icp':
+        transfo, distances, i = icp.icp(points3, points4)
+        #print(distances)
 
     else:
         raise Exception('Type de transformation invalide')
@@ -125,7 +132,7 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
 
 
     if draw:
-        print(transfo)
+        #print(transfo)
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
         k = 0
@@ -135,10 +142,10 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
                 pass
             else:
                 coord_homo = np.array([coords1[i][0], coords1[i][1], coords1[i][2], 1])
-                point_transfo = np.matmul(np.linalg.inv( transfo), coord_homo)
-                #point_transfo = np.matmul(transfo, coord_homo)
-                #ax.scatter(coords1[i][0], coords1[i][1], coords1[i][2], color='red')
-                ax.scatter(point_transfo[0], point_transfo[1], point_transfo[2], color='green')
+                #point_transfo = np.matmul(np.linalg.inv(transfo), coord_homo)
+                point_transfo = np.matmul(transfo, coord_homo)
+                ax.scatter(coords1[i][0], coords1[i][1], coords1[i][2], color='red')
+                #ax.scatter(point_transfo[0], point_transfo[1], point_transfo[2], color='green')
             k = k + 1
         k = 0
         for i in coords2:
@@ -146,10 +153,10 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
                 pass
             else:
                 coord_homo = np.array([coords2[i][0], coords2[i][1], coords2[i][2], 1])
-                point_transfo = np.matmul(transfo, coord_homo)
-                #point_transfo = np.matmul(np.linalg.inv( transfo), coord_homo)
-                ax.scatter(coords2[i][0], coords2[i][1], coords2[i][2], color='blue')
-                #ax.scatter(point_transfo[0], point_transfo[1], point_transfo[2], color='orange')
+                #point_transfo = np.matmul(transfo, coord_homo)
+                point_transfo = np.matmul(np.linalg.inv(transfo), coord_homo)
+                #ax.scatter(coords2[i][0], coords2[i][1], coords2[i][2], color='blue')
+                ax.scatter(point_transfo[0], point_transfo[1], point_transfo[2], color='orange')
             k = k + 1
         plt.show()
 
