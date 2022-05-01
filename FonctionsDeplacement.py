@@ -86,7 +86,9 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
 
     #Test de vérification de la transformation
 
-    transfo_test = np.array([[1, 0, 0, 0.1], [0, 0.98, 0.17, 0], [0, -0.17, 0.98, 0], [0, 0, 0, 1]])
+    #transfo_test = np.array([[1, 0, 0, 0.1], [0, 0.98, 0.17, 0], [0, -0.17, 0.98, 0], [0, 0, 0, 1]])
+    transfo_test = np.array([[1, 0, 0, 0.01], [0, 0.998, 0.01, 0], [0, -0.01, 0.998, 0], [0, 0, 0, 1]])
+
     #print(transfo_test)
     points_test = []
     for i in points1.tolist():
