@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import FonctionsDeplacement as disp
 
 basedir = 'DataKITTI/dataset'
-sequence = '06'
+sequence = '00'
 data = pk.odometry(basedir, sequence)
 
 fx = data.calib.K_cam0[0, 0]
@@ -30,22 +30,26 @@ list_transfo_ref = [data.poses[0]]
 
 for i in range(1, len(data.poses)):
 #for i in range(1, 200):
-    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'affine', True)
+    transfo = disp.transformationStep(i, i - 1, fx, fy, b, data, orb, 'icp', False)
     #transfo_cumulee.append(np.matmul(transfo_cumulee[i-1], transfo))
     #poseStep = transfo_cumulee[i][0:3, 3]
 
     poseStep = transfo[0:3, 3]
     poseStep = np.add(pose[i-1], poseStep)
     list_transfo_ref.append(data.poses[i])
-    #print(transfo)
+
     #print(transfo[0:3, 3])
+    # print('Transfo - transfo_Ref')
+    # print(transfo)
+    # print(data.poses[i])
+    #print(np.add(transfo, -1*data.poses[i]))
 
     poseRefStep = data.poses[i][0:3, 3]
-    print("calculee", poseStep)
-    print('ref', poseRefStep)
-    print('diff', np.add(poseRefStep, -1*poseStep))
-    print('stepSizeRef', np.add(poseRefStep, -1*poseRef[i-1]))
-    print('stepSizecalc', np.add(poseStep, -1*pose[i-1]))
+    # print("calculee", poseStep)
+    # print('ref', poseRefStep)
+    # print('diff', np.add(poseRefStep, -1*poseStep))
+    # print('stepSizeRef', np.add(poseRefStep, -1*poseRef[i-1]))
+    # print('stepSizecalc', np.add(poseStep, -1*pose[i-1]))
 
     #print(data.poses[i])
     #print(transfo)
@@ -76,26 +80,12 @@ for i in poseRef:
 
 fig = plt.figure()
 
-ax = fig.add_subplot(421)
+ax = fig.add_subplot(211)
 plt.plot(np.dot(1, zref), np.dot(-1, xref))
 
-ax = fig.add_subplot(423)
-plt.plot(x, y)
 
-ax = fig.add_subplot(424)
-plt.plot(x, z)
-
-ax = fig.add_subplot(425)
-plt.plot(y, x)
-
-ax = fig.add_subplot(426)
-plt.plot(y, z)
-
-ax = fig.add_subplot(427)
-plt.plot(z, x)
-
-ax = fig.add_subplot(428)
-plt.plot(z, y)
+ax = fig.add_subplot(212)
+plt.plot(z, np.dot(-1, x))
 
 plt.tight_layout()
 plt.show()
