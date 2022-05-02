@@ -34,6 +34,24 @@ def generatePointClouds(step, stepPrecedent, fx, fy, b, data, orb):
     coords2 = {}
     points1 = []
     points2 = []
+    #img = cv.drawKeypoints(img1G, kp1G[:50], None, color=(0, 255, 0), flags=0)
+    #img = cv.drawMatches(img1G, kp1G, img1D, kp1D, matches1GD[:50], None, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+    #plt.imshow(img), plt.show()
+
+    # fig = plt.figure()
+    # ax = fig.add_subplot(311)
+    # img = cv.drawMatches(img1G, kp1G, img1D, kp1D, matches1GD[:50], None,
+    #                      flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+    # plt.imshow(img)
+    # ax = fig.add_subplot(312)
+    # img = cv.drawMatches(img2G, kp2G, img2D, kp2D, matches2GD[:50], None,
+    #                      flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+    # plt.imshow(img)
+    # ax = fig.add_subplot(313)
+    # img = cv.drawMatches(img1G, kp1G, img2G, kp2G, matchesTemporel[:50], None,
+    #                      flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+    # plt.imshow(img)
+    # plt.show()
 
     for i in matches1GD:
         trainIdx = i.trainIdx
