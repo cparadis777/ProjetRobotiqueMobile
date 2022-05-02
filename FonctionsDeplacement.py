@@ -1,14 +1,13 @@
 import math
 
-# noinspection PyUnresolvedReferences
+
 import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.spatial import distance
-from mpl_toolkits.mplot3d import Axes3D
+
 import icp
 import FonctionsUtilitaires as util
-import Rigid3Dtransform as rigid
+
 
 
 def generatePointClouds(step, stepPrecedent, fx, fy, b, data, orb):
@@ -138,9 +137,6 @@ def transformationStep(step, stepPrecedent, fx, fy, b, data, orb, type, draw):
         # T = transfo[0:3, 3]
         # transfo = np.hstack([-1*R, T[:, None]])
         transfo = np.vstack([transfo, np.transpose(np.array([0, 0, 0, 1])[:, None])])
-
-    elif type == 'rigid':
-        transfo = rigid.rigid_transform_3D(np.transpose(points1)[:, 0:3], np.transpose(points2)[:, 0:3])
 
     elif type == 'icp':
         transfo, distances, i = icp.icp(points1, points2)

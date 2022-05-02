@@ -1,11 +1,6 @@
 import cv2 as cv
-import matplotlib.pyplot
-import numpy
 import numpy as np
-
-import DescriptorMatch
 import pykitti as pk
-import FonctionsUtilitaires as util
 import matplotlib.pyplot as plt
 import FonctionsDeplacement as disp
 

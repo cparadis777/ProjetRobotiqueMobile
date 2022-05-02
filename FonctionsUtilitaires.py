@@ -1,9 +1,8 @@
-# Defini des fonctions permettant de convertir
-# les paramètres des caméras de [m] a [pixels]
+
 import cv2 as cv
 import math
 import numpy as np
-#from scipy.spatial import distance
+
 
 
 
